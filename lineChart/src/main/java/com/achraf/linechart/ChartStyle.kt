@@ -10,8 +10,10 @@ import androidx.compose.ui.unit.sp
 /**
  * Configuration class for line chart styling
  */
+
 data class ChartStyle(
-    val unselectedColor: Color = Color(0xFF7C7C7C),
+    val backgroundColor: Color = Color.Transparent,
+    val textColor: Color = Color(0xFF7C7C7C),
     val helperLinesThicknessPx: Float = 1f,
     val axisLinesThicknessPx: Float = 5f,
     val labelFontSize: TextUnit = 14.sp,

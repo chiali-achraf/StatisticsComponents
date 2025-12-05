@@ -4,6 +4,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.LocalTextStyle
@@ -43,7 +44,8 @@ fun MultiLineChartContent(
     enableAnimation: Boolean = true
 ) {
     val textStyle = LocalTextStyle.current.copy(
-        fontSize = style.labelFontSize
+        fontSize = style.labelFontSize,
+        color = style.textColor // Add text color
     )
 
     val referenceDataPoints = lineData.first().dataPoints
@@ -83,6 +85,7 @@ fun MultiLineChartContent(
     Canvas(
         modifier = modifier
             .fillMaxSize()
+            .background(style.backgroundColor)
             .pointerInput(drawPointsList, xLabelWidth) {
                 detectTapGestures { offset ->
                     if (drawPointsList.isEmpty()) return@detectTapGestures
@@ -129,7 +132,10 @@ fun MultiLineChartContent(
         val xLabelTextLayoutResults = referenceDataPoints.map {
             measurer.measure(
                 text = it.xLabel,
-                style = textStyle.copy(textAlign = TextAlign.Center)
+                style = textStyle.copy(
+                    textAlign = TextAlign.Center,
+                    color = style.textColor // Add text color
+                )
             )
         }
         val maxXLabelWidth = xLabelTextLayoutResults.maxOfOrNull { it.size.width } ?: 0
@@ -161,7 +167,7 @@ fun MultiLineChartContent(
         val yLabelTextLayoutResults = yLabels.map {
             measurer.measure(
                 text = it.formatted(),
-                style = textStyle
+                style = textStyle.copy(color = style.textColor) // Add text color
             )
         }
         val maxYLabelWidth = yLabelTextLayoutResults.maxOfOrNull { it.size.width } ?: 0
@@ -188,15 +194,15 @@ fun MultiLineChartContent(
                     y = viewPortBottomY + xAxisLabelSpacingPx
                 ),
                 color = if (isSelected) {
-                    lineData.getOrNull(selectedLineIndex)?.color ?: style.unselectedColor
-                } else style.unselectedColor
+                    lineData.getOrNull(selectedLineIndex)?.color ?: style.textColor // Use textColor
+                } else style.textColor // Use textColor
             )
 
             if (showHelperLines) {
                 drawLine(
                     color = if (isSelected) {
-                        lineData.getOrNull(selectedLineIndex)?.color ?: style.unselectedColor
-                    } else style.unselectedColor,
+                        lineData.getOrNull(selectedLineIndex)?.color ?: style.textColor // Use textColor
+                    } else style.textColor.copy(alpha = 0.3f), // Slightly transparent for helper lines
                     start = Offset(
                         x = x + result.size.width / 2f,
                         y = viewPortBottomY
@@ -274,12 +280,12 @@ fun MultiLineChartContent(
                     x = x,
                     y = y
                 ),
-                color = style.unselectedColor
+                color = style.textColor // Use textColor
             )
 
             if (showHelperLines) {
                 drawLine(
-                    color = style.unselectedColor,
+                    color = style.textColor.copy(alpha = 0.3f), // Slightly transparent for helper lines
                     start = Offset(
                         x = viewPortLeftX,
                         y = y + result.size.height.toFloat() / 2f
