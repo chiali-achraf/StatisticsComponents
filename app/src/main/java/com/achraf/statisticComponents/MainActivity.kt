@@ -1,6 +1,5 @@
 package com.achraf.statisticComponents
 
-
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,6 +34,7 @@ import com.achraf.linechart.LineChartData
 import com.achraf.linechart.MultiLineChart
 import com.achraf.piechat.PieChart
 import com.achraf.piechat.PieChartInput
+
 import com.achraf.statisticComponents.ui.theme.StatisticsComponentsTheme
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -48,37 +48,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StatisticsComponentsTheme {
-                Column (
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(30.dp),
+                        .verticalScroll(rememberScrollState())
+                        .padding(vertical = 40.dp), // Added padding to top and bottom
+                    verticalArrangement = Arrangement.spacedBy(50.dp), // Increased spacing between components
                     horizontalAlignment = Alignment.CenterHorizontally
-
-                ){
-
-                    PieChart ()
+                ) {
+                    PieChartExample()
 
                     CryptoPortfolioChart()
 
                     BarChartExample()
-
-
                 }
-
             }
         }
     }
 }
 
-
-
 @Composable
 fun BarChartExample() {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(16.dp)
             .background(Color.White)
     ) {
@@ -150,71 +144,77 @@ fun BarChartExample() {
         )
     }
 }
-@Composable
-fun PieChart (){
-    Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Gray)
-                        .padding(5.dp),
-                    verticalArrangement = Arrangement.spacedBy(30.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(
-                        "Preferred Programming Languages",
-                        fontSize = 35.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 30.dp)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ){
-                        PieChart(
-                            modifier = Modifier.size(400.dp),
-                            input = listOf(
-                                PieChartInput(
-                                    color = Color.Black,
-                                    value = 29,
-                                    description = "Python"
-                                ),
-                                PieChartInput(
-                                    color = Color.Red,
-                                    value = 21,
-                                    description = "Swift"
-                                ),
-                                PieChartInput(
-                                    color = Color.Yellow,
-                                    value = 32,
-                                    description = "JavaScript"
-                                ),
-                                PieChartInput(
-                                    color = Color.Gray,
-                                    value = 18,
-                                    description = "Java"
-                                ),
-                                PieChartInput(
-                                    color = Color.Green,
-                                    value = 12,
-                                    description = "Ruby"
-                                ),
-                                PieChartInput(
-                                    color = Color.Blue,
-                                    value = 38,
-                                    description = "Kotlin"
-                                ),
-                            ),
-                            centerText = "150 persons were asked",
-                            textColor = Color.White,
-                            centerTextColor = Color.White,
-                            innerRadius = 300f
-                            )
-                    }
-                }
-}
 
+@Composable
+fun PieChartExample() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Gray)
+            .padding(20.dp), // Added more padding
+        verticalArrangement = Arrangement.spacedBy(30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Preferred Programming Languages",
+            fontSize = 28.sp, // Slightly smaller for better proportion
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 20.dp)
+        )
+
+        // Center the PieChart with Box
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp), // Fixed height for centering
+            contentAlignment = Alignment.Center // This centers the PieChart
+        ) {
+            PieChart(
+                input = listOf(
+                    PieChartInput(
+                        color = Color.Black,
+                        value = 29,
+                        description = "Python"
+                    ),
+                    PieChartInput(
+                        color = Color.Red,
+                        value = 21,
+                        description = "Swift"
+                    ),
+                    PieChartInput(
+                        color = Color.Yellow,
+                        value = 32,
+                        description = "JavaScript"
+                    ),
+                    PieChartInput(
+                        color = Color.Gray,
+                        value = 18,
+                        description = "Java"
+                    ),
+                    PieChartInput(
+                        color = Color.Green,
+                        value = 12,
+                        description = "Ruby"
+                    ),
+                    PieChartInput(
+                        color = Color.Blue,
+                        value = 38,
+                        description = "Kotlin"
+                    ),
+                ),
+                centerText = "150 persons were asked",
+                textColor = Color.White,
+                centerTextColor = Color.White,
+                innerRadius = 300f,
+                modifier = Modifier.size(350.dp) // Adjust size as needed
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp)) // Bottom spacing
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -265,9 +265,9 @@ fun CryptoPortfolioChart() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(Color(0xFF1A1A1A))
-            .padding(16.dp)
+            .padding(20.dp) // Increased padding
     ) {
         Text(
             text = "Crypto Portfolio",
@@ -278,7 +278,7 @@ fun CryptoPortfolioChart() {
 
         // Legend
         Row(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 12.dp), // Increased vertical padding
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             cryptoData.forEach { crypto ->
@@ -308,7 +308,7 @@ fun CryptoPortfolioChart() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp)) // Increased spacing
 
         MultiLineChart(
             lineData = cryptoData,
@@ -326,5 +326,7 @@ fun CryptoPortfolioChart() {
             visibleDataPointsCount = 15,
             enableHorizontalScroll = true
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }

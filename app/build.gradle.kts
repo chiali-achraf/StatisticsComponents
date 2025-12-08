@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("maven-publish")
 
 }
 
@@ -59,10 +58,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+//    implementation(libs.statisticscomponents)
+
 
     implementation(project(":PieChat"))
     implementation(project(":lineChart"))
     implementation(project(":barChart"))
-
+//
 
 }

@@ -210,12 +210,12 @@ private fun XAxis(
                 .fillMaxWidth()
                 .height(2.dp)
         ) {
-            drawLine(
-                color = axisColor,
-                start = Offset(0f, 0f),
-                end = Offset(size.width, 0f),
-                strokeWidth = 2.dp.toPx()
-            )
+//            drawLine(
+//                color = axisColor,
+//                start = Offset(0f, 0f),
+//                end = Offset(size.width, 0f),
+//                strokeWidth = 2.dp.toPx()
+//            )
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -234,13 +234,13 @@ private fun XAxis(
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val centerX = size.width / 2
 
-                        // Draw tick mark
-                        drawLine(
-                            color = axisColor,
-                            start = Offset(centerX, 0f),
-                            end = Offset(centerX, 8.dp.toPx()),
-                            strokeWidth = 2.dp.toPx()
-                        )
+//                        // Draw tick mark
+//                        drawLine(
+//                            color = axisColor,
+//                            start = Offset(centerX, 0f),
+//                            end = Offset(centerX, 8.dp.toPx()),
+//                            strokeWidth = 2.dp.toPx()
+//                        )
 
                         // Draw rotated text
                         rotate(degrees = 90f, pivot = Offset(centerX, 12.dp.toPx())) {

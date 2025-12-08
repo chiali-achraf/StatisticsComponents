@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import android.graphics.Paint
+import androidx.compose.ui.geometry.CornerRadius
 import kotlin.math.roundToInt
 
 
@@ -82,19 +83,21 @@ private fun DrawScope.draw2DBar(
     width: Float,
     height: Float,
     primaryColor: Color,
-    backgroundColor: Color
+    backgroundColor: Color,
+    cornerRadius: Float = 20f
 ) {
     val barWidth = width * 0.8f
     val barLeft = (width - barWidth) / 2f
 
-    drawRect(
+    drawRoundRect(
         brush = Brush.verticalGradient(
             colors = listOf(primaryColor, backgroundColor),
             startY = 0f,
             endY = height
         ),
         topLeft = Offset(barLeft, 0f),
-        size = Size(barWidth, height)
+        size = Size(barWidth, height),
+        cornerRadius = CornerRadius(cornerRadius, cornerRadius)
     )
 }
 
