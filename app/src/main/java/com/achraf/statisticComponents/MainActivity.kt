@@ -96,6 +96,16 @@ fun BarChartExample() {
                     description = "March",
                     color =Color(0xFFFF6B6B),
                     textColor =Color(0xFFFF6B6B),
+                ),BarChartInput(
+                    value = 0,
+                    description = "March",
+                    color =Color(0xFFFF6B6B),
+                    textColor =Color(0xFFFF6B6B),
+                ),BarChartInput(
+                    value = 0,
+                    description = "March",
+                    color =Color(0xFFFF6B6B),
+                    textColor =Color(0xFFFF6B6B),
                 ),
                 BarChartInput(
                     value = 0,

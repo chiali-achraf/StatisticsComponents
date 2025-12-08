@@ -1,7 +1,9 @@
 package com.achraf.barchart
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,7 +53,8 @@ fun BarChart(
     yAxisSteps: Int = 5,
     maxY: Int? = null,
     topRadius: Float = 20f,
-    bottomRadius: Float = 20f
+    bottomRadius: Float = 20f,
+    enableHorizontalScroll: Boolean = true
 ) {
     require(inputList.isNotEmpty()) { "Input list cannot be empty" }
     require(inputList.all { it.value >= 0 }) { "All values must be non-negative" }
@@ -92,6 +95,8 @@ fun BarChart(
         }
     }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = modifier
     ) {
@@ -112,11 +117,19 @@ fun BarChart(
                 )
             }
 
-            // Bars
+            // Bars with horizontal scroll
             Row(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.spacedBy(spacing),
-                modifier = Modifier.padding(start = if (showYAxisValues) 0.dp else 16.dp)
+                modifier = Modifier
+                    .then(
+                        if (enableHorizontalScroll) {
+                            Modifier.horizontalScroll(scrollState)
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .padding(start = if (showYAxisValues) 0.dp else 16.dp)
             ) {
                 inputList.forEach { input ->
                     // Calculate height based on actual value relative to Y-axis maximum
@@ -139,7 +152,6 @@ fun BarChart(
                         backgroundColor = input.color.copy(alpha = 0.5f),
                         style = style,
                         textSize = textSize,
-
                     )
                 }
             }
@@ -154,14 +166,25 @@ fun BarChart(
             }
 
             if (showDescription) {
-                XAxis(
-                    inputList = inputList,
-                    barWidth = barWidth,
-                    spacing = spacing,
-                    axisColor = axisColor,
-                    textSize = textSize,
-                    modifier = Modifier.padding(start = if (showYAxisValues) 0.dp else 16.dp)
-                )
+                Row(
+                    modifier = Modifier
+                        .then(
+                            if (enableHorizontalScroll) {
+                                Modifier.horizontalScroll(scrollState)
+                            } else {
+                                Modifier
+                            }
+                        )
+                        .padding(start = if (showYAxisValues) 0.dp else 16.dp)
+                ) {
+                    XAxisContent(
+                        inputList = inputList,
+                        barWidth = barWidth,
+                        spacing = spacing,
+                        axisColor = axisColor,
+                        textSize = textSize
+                    )
+                }
             }
         }
     }
@@ -225,54 +248,40 @@ private fun YAxis(
 }
 
 @Composable
-private fun XAxis(
+private fun XAxisContent(
     inputList: List<BarChartInput>,
     barWidth: Dp,
     spacing: Dp,
     axisColor: Color,
-    textSize: Dp,
-    modifier: Modifier = Modifier
+    textSize: Dp
 ) {
-    Column(
-        modifier = modifier
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(spacing)
     ) {
-        Spacer(modifier = Modifier.height(4.dp))
+        inputList.forEach { input ->
+            Box(
+                modifier = Modifier
+                    .width(barWidth)
+                    .height(60.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val centerX = size.width / 2
 
-        // Description labels
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(spacing)
-        ) {
-            inputList.forEach { input ->
-                Box(
-                    modifier = Modifier
-                        .width(barWidth)
-                        .height(60.dp),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val centerX = size.width / 2
 
-                        // Draw tick mark
-                        drawLine(
-                            color = axisColor,
-                            start = Offset(centerX, 0f),
-                            end = Offset(centerX, 8.dp.toPx()),
-                            strokeWidth = 2.dp.toPx()
+
+                    // Draw rotated text
+                    rotate(degrees = 90f, pivot = Offset(centerX, 12.dp.toPx())) {
+                        drawContext.canvas.nativeCanvas.drawText(
+                            input.description,
+                            centerX,
+                            12.dp.toPx() + textSize.toPx() / 3,
+                            Paint().apply {
+                                color = (input.textColor ?: input.color).toArgb()
+                                this.textSize = textSize.toPx()
+                                textAlign = Paint.Align.LEFT
+                            }
                         )
-
-                        // Draw rotated text
-                        rotate(degrees = 90f, pivot = Offset(centerX, 12.dp.toPx())) {
-                            drawContext.canvas.nativeCanvas.drawText(
-                                input.description,
-                                centerX,
-                                12.dp.toPx() + textSize.toPx() / 3,
-                                Paint().apply {
-                                    color = (input.textColor ?: input.color).toArgb()
-                                    this.textSize = textSize.toPx()
-                                    textAlign = Paint.Align.LEFT
-                                }
-                            )
-                        }
                     }
                 }
             }
