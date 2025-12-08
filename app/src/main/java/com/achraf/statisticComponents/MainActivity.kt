@@ -78,19 +78,30 @@ fun BarChartExample() {
     ) {
         // Example 1: 2D Bar Chart
         BarChart(
-            maxY = 100,
             inputList = listOf(
                 BarChartInput(
-                    value = 60,
-                    description = "Android",
-                    color = Color(0xFF3DDC84),
-                    textColor = Color.DarkGray
+                    value = 60000,
+                    description = "January",
+                    color = Color(0xFFFF6B6B),
+                    textColor = Color(0xFFFF6B6B)
                 ),
                 BarChartInput(
-                    value = 40,
-                    description = "iOS",
-                    color = Color(0xFF007AFF),
-                    textColor = Color.DarkGray
+                    value = 4000,
+                    description = "February",
+                    color = Color(0xFFFF6B6B),
+                    textColor = Color(0xFFFF6B6B),
+                ),
+                BarChartInput(
+                    value = 0,
+                    description = "March",
+                    color =Color(0xFFFF6B6B),
+                    textColor =Color(0xFFFF6B6B),
+                ),
+                BarChartInput(
+                    value = 0,
+                    description = "April",
+                    color = Color(0xFFFF6B6B),
+                    textColor = Color(0xFFFF6B6B),
                 )
             ),
             style = BarChartStyle.FLAT_2D,
@@ -100,7 +111,6 @@ fun BarChartExample() {
             showDescription = true,
             showYAxisValues = true,
             yAxisSteps = 5,
-            axisColor = Color.Black,
         )
 
         Spacer(modifier = Modifier.height(40.dp))

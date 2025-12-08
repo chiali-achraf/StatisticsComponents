@@ -33,6 +33,8 @@ import kotlin.math.ceil
  * @param yAxisSteps Number of steps/divisions on Y-axis
  * @param maxY Optional maximum value for Y-axis. If provided, it will be used as the reference maximum.
  *             If not provided, the chart will use the maximum value from input data.
+ * @param topRadius Corner radius for the top of 2D bars
+ * @param bottomRadius Corner radius for the bottom of 2D bars
  */
 @Composable
 fun BarChart(
@@ -47,22 +49,47 @@ fun BarChart(
     axisColor: Color = Color.Black,
     showYAxisValues: Boolean = true,
     yAxisSteps: Int = 5,
-    maxY: Int? = null
+    maxY: Int? = null,
+    topRadius: Float = 20f,
+    bottomRadius: Float = 20f
 ) {
     require(inputList.isNotEmpty()) { "Input list cannot be empty" }
-    require(inputList.all { it.value > 0 }) { "All values must be positive" }
+    require(inputList.all { it.value >= 0 }) { "All values must be non-negative" }
 
     val maxValue = remember(inputList) {
-        inputList.maxOf { it.value }
+        val max = inputList.maxOf { it.value }
+        if (max == 0) 100 else max // Default to 100 if all values are 0
     }
 
     val yAxisMax = remember(maxValue, yAxisSteps, maxY) {
         // If maxY is provided, use it as the maximum
         val referenceMax = maxY ?: maxValue
 
-        // Calculate steps based on the reference maximum
-        val step = ceil(referenceMax.toFloat() / yAxisSteps).toInt()
-        step * yAxisSteps
+        // Calculate a nice round number for the Y-axis maximum
+        when {
+            referenceMax == 0 -> yAxisSteps * 20 // Default scale if all zero
+            referenceMax <= 10 -> yAxisSteps * 2
+            referenceMax <= 50 -> {
+                val step = ceil(referenceMax.toFloat() / yAxisSteps / 10).toInt() * 10
+                step * yAxisSteps
+            }
+            referenceMax <= 100 -> {
+                val step = ceil(referenceMax.toFloat() / yAxisSteps / 20).toInt() * 20
+                step * yAxisSteps
+            }
+            referenceMax <= 1000 -> {
+                val step = ceil(referenceMax.toFloat() / yAxisSteps / 50).toInt() * 50
+                step * yAxisSteps
+            }
+            referenceMax <= 10000 -> {
+                val step = ceil(referenceMax.toFloat() / yAxisSteps / 500).toInt() * 500
+                step * yAxisSteps
+            }
+            else -> {
+                val step = ceil(referenceMax.toFloat() / yAxisSteps / 1000).toInt() * 1000
+                step * yAxisSteps
+            }
+        }
     }
 
     Column(
@@ -93,8 +120,12 @@ fun BarChart(
             ) {
                 inputList.forEach { input ->
                     // Calculate height based on actual value relative to Y-axis maximum
-                    val calculatedHeight = maxBarHeight * (input.value.toFloat() / yAxisMax)
-                    val percentage = input.value / 100f // For display purposes
+                    val calculatedHeight = if (input.value > 0) {
+                        maxBarHeight * (input.value.toFloat() / yAxisMax)
+                    } else {
+                        0.dp // Show no bar for zero values
+                    }
+                    val percentage = if (yAxisMax > 0) input.value.toFloat() / yAxisMax else 0f
 
                     Bar(
                         modifier = Modifier
@@ -107,7 +138,8 @@ fun BarChart(
                         textColor = input.textColor ?: input.color,
                         backgroundColor = input.color.copy(alpha = 0.5f),
                         style = style,
-                        textSize = textSize
+                        textSize = textSize,
+
                     )
                 }
             }
@@ -204,20 +236,6 @@ private fun XAxis(
     Column(
         modifier = modifier
     ) {
-        // X-axis horizontal line
-        Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(2.dp)
-        ) {
-//            drawLine(
-//                color = axisColor,
-//                start = Offset(0f, 0f),
-//                end = Offset(size.width, 0f),
-//                strokeWidth = 2.dp.toPx()
-//            )
-        }
-
         Spacer(modifier = Modifier.height(4.dp))
 
         // Description labels
@@ -234,13 +252,13 @@ private fun XAxis(
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val centerX = size.width / 2
 
-//                        // Draw tick mark
-//                        drawLine(
-//                            color = axisColor,
-//                            start = Offset(centerX, 0f),
-//                            end = Offset(centerX, 8.dp.toPx()),
-//                            strokeWidth = 2.dp.toPx()
-//                        )
+                        // Draw tick mark
+                        drawLine(
+                            color = axisColor,
+                            start = Offset(centerX, 0f),
+                            end = Offset(centerX, 8.dp.toPx()),
+                            strokeWidth = 2.dp.toPx()
+                        )
 
                         // Draw rotated text
                         rotate(degrees = 90f, pivot = Offset(centerX, 12.dp.toPx())) {
