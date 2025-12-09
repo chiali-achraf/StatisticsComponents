@@ -54,7 +54,7 @@ afterEvaluate {
 
                 groupId = "com.github.chiali-achraf"
                 artifactId = "barchart"
-                version = "1.0.4"
+                version = "1.0.6"
             }
         }
     }

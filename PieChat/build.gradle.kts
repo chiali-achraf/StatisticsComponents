@@ -54,7 +54,7 @@ afterEvaluate {
 
                 groupId = "com.github.chiali-achraf"
                 artifactId = "piechart"
-                version = "1.0.0"
+                version = "1.0.6"
             }
         }
     }
